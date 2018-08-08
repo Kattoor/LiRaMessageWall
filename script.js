@@ -1,55 +1,79 @@
 var container = document.getElementById('container');
 var lastId = -1;
-var colors = ['#27ae60', '#2980b9', /*'#3498db',*/ '#8e44ad', '#e67e22', '#c0392b'];
+var originalColors = ['#27ae60', '#2980b9', /*'#3498db',*/ '#8e44ad', '#e67e22', '#c0392b'];
+var colors = originalColors.slice();
 var amountOfFixedMessages = 1;
+var lastUsedColor;
 
-function checkMessages(initialLoad) {
-    fetch('/messages?from=' + (lastId + 1)).then(response => response.json()).then(data => {
-        for (var d of data) {
-
-            var div = document.createElement('div');
-            div.className = 'message';
-            div.style['background-color'] = colors[Math.floor(Math.random() * colors.length)];
-
-            var p = document.createElement('p');
-            p.innerHTML = d.message;
-
-            var img = document.createElement('img');
-            img.src = 'lissa.svg';
-
-            div.appendChild(img);
-
-            div.appendChild(p);
-
-            container.insertBefore(div, container.children[amountOfFixedMessages]);
-            lastId = d.id;
-
-            var animate = function (div) {
-                setTimeout(() => {
-                    div.style['max-height'] = '1000px';
-                    div.style['margin'] = '15px';
-                    div.style['padding'] = '10px 10px 10px 0';
-                    if (!initialLoad) {
-                        div.classList.add('new1');
-
-                        container.children[1 + amountOfFixedMessages].classList.remove('new1');
-                        container.children[1 + amountOfFixedMessages].classList.add('new2');
-
-                        container.children[2 + amountOfFixedMessages].classList.remove('new2');
-                        container.children[2 + amountOfFixedMessages].classList.add('new3');
-
-                        container.children[3 + amountOfFixedMessages].classList.remove('new3');
-                    }
-                }, 100);
-            };
-
-            animate(div);
-        }
-    });
+function pollForNewMessages() {
+    fetch('/messages?from=' + (lastId + 1))
+        .then(toJson)
+        .then(messages => messages.map(logLastId).forEach(addMessage));
 }
 
-checkMessages(true);
+function toJson(response) {
+    return response.json();
+}
 
-setInterval(() => checkMessages(false), 1000);
+function logLastId(message) {
+    lastId = message.id;
+    return message;
+}
+
+function createMessageDOM(message) {
+
+    if (colors.length === 0)
+        colors = originalColors.slice();
+    var randomColorIndex;
+    do {
+        randomColorIndex = Math.floor(Math.random() * colors.length);
+    } while (colors[randomColorIndex] === lastUsedColor);
+    lastUsedColor = colors[randomColorIndex];
+
+
+    var div = document.createElement('div');
+    div.className = 'message';
+    div.style['background-color'] = colors[randomColorIndex];
+    colors.splice(randomColorIndex, randomColorIndex + 1);
+
+    var img = document.createElement('img');
+    img.src = 'lissa.svg';
+    div.appendChild(img);
+
+    var paragraph = document.createElement('p');
+    paragraph.innerHTML = message.content;
+    div.appendChild(paragraph);
+
+    return div;
+}
+
+function addMessage(message) {
+
+    var div = createMessageDOM(message);
+    container.insertBefore(div, container.children[amountOfFixedMessages]);
+
+    var animate = function (div, message) {
+        setTimeout(() => {
+            div.style['max-height'] = '1000px';
+            div.style['margin'] = '15px';
+            div.style['padding'] = '10px 10px 10px 0';
+
+            if (lastId === message.id) {
+                div.classList.add('new1');
+                container.children[2].classList.remove('new1');
+                container.children[2].classList.add('new2');
+                container.children[3].classList.remove('new2');
+                container.children[3].classList.add('new3');
+                container.children[4].classList.remove('new4');
+            }
+        }, 100);
+    };
+
+    animate(div, message);
+}
+
+pollForNewMessages(true);
+
+setInterval(() => pollForNewMessages(false), 1000);
 
 doStuff();

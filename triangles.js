@@ -7,7 +7,7 @@ function doStuff() {
     canvas.width = width;
     canvas.height = height;
 
-    var distance = 200;
+    var distance = 150;
     var triangleSize = 15;
 
     var colors = ['#CB849C', '#B39F8C', '#BABABA'];

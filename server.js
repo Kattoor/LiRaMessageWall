@@ -37,7 +37,7 @@ function handleMessagesRequest(req, res) {
     const fromId = +req.url.split('?from=')[1];
     const requestedMessages = messages
         .slice(fromId)
-        .map((message, index) => ({message, id: index + fromId}));
+        .map((message, index) => ({content: message, id: index + fromId}));
     res.write(JSON.stringify(requestedMessages));
     res.end();
 }
