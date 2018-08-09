@@ -26,7 +26,7 @@ function handleRoot(req, res) {
 
             req.on('end', () => {
                 console.log('Message: ' + body);
-                messages.push(body);
+                messages.push({content: body, time: Date.now()});
                 res.end();
             });
             break;
@@ -37,7 +37,7 @@ function handleMessagesRequest(req, res) {
     const fromId = +req.url.split('?from=')[1];
     const requestedMessages = messages
         .slice(fromId)
-        .map((message, index) => ({content: message, id: index + fromId}));
+        .map((message, index) => ({content: message.content, id: index + fromId, timeReceived: message.time}));
     res.write(JSON.stringify(requestedMessages));
     res.end();
 }

@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'test';
+    src: url('seguiemj.ttf');
+}
+
 body {
     background-color: #ecf0f1;
     padding: 0;
@@ -6,11 +11,48 @@ body {
 
 #container {
     display: flex;
+}
+
+#pollContainer {
+    width: 100%;
+    max-width: 0;
+    transition: max-width 1s linear;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+    overflow-x: hidden;
+    background-color: #ecf0f1aa;
+}
+
+#pollQuestion {
+
+}
+
+#pollAnswers {
+    display: flex;
+    align-items: center;
+}
+
+#pollTime {
+
+}
+
+#pollChart {
+    height: 300px;
+    width: 300px;
+    background-color: white;
+}
+
+#messagesContainer {
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    max-width: 60%;
+    width: 100%;
     margin: auto;
+    transition: max-width 1s linear, opacity 1s linear;
 }
 
 .message {
@@ -27,7 +69,7 @@ body {
 
 p {
     display: inline;
-    font-family: sans-serif;
+    font-family: test;
     color: white;
     white-space: pre-line;
     font-size: 1.25em;
