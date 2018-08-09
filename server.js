@@ -1,5 +1,8 @@
 const http = require('http');
 const fs = require('fs');
+const path = new Date().getTime() + '.txt';
+
+console.log(path)
 
 const messages = [];
 
@@ -26,8 +29,9 @@ function handleRoot(req, res) {
 
             req.on('end', () => {
                 console.log('Message: ' + body);
-                messages.push(body);
                 res.end();
+                messages.push(body);
+                fs.appendFileSync(path, body + '\r\n');
             });
             break;
     }
