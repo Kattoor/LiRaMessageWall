@@ -55,8 +55,8 @@ function addMessage(message) {
     var animate = function (div, message) {
         setTimeout(() => {
             div.style['max-height'] = '1000px';
-            div.style['margin'] = '15px';
-            div.style['padding'] = '10px 10px 10px 0';
+            div.style['margin'] = '5px';
+            div.style['padding'] = '5px 5px 5px 0';
 
             if (lastId === message.id) {
                 div.classList.add('new1');
